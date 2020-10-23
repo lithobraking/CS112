@@ -2,6 +2,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class Sort {
+    public static void quicksortAll(ArrayList<Car> data) {
+        quicksort(data, "make");
+        sortModels(data);
+        sortYears(data);
+    }
 
     public static void quicksort(ArrayList<Car> data, String param) {
         if (param.equalsIgnoreCase("make")) {

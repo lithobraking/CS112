@@ -1,3 +1,4 @@
+import javax.crypto.SealedObject;
 import java.awt.image.AreaAveragingScaleFilter;
 import java.io.File;
 import java.io.IOException;
@@ -9,20 +10,25 @@ class Car {
 	private final String make;
 	private final String model;
 	private final String year;
+	private final String vin;
 
 	public Car(String make, String model, String year) {
 		this.make = make;
 		this.model = model;
 		this.year = year;
+		vin = null;
+	}
+
+	public Car(String make, String model, String year, String vin) {
+		this.make = make;
+		this.model = model;
+		this.year = year;
+		this.vin = vin;
 	}
 
 	@Override
 	public String toString() {
-		return "Car {" +
-				"make='" + make + '\'' +
-				", model='" + model + '\'' +
-				", year='" + year + '\'' +
-				'}';
+		return String.format("%15s%25s%5s%18s", this.getMake(), this.getModel(), this.getYear(), this.getVin());
 	}
 
 	// getter methods
@@ -35,18 +41,20 @@ class Car {
 	public String getYear() {
 		return year;
 	}
+	public String getVin() { return vin; }
 }
 
 public class DisplayCars {
 	public static void main(String[] args) {
 		try {
-			File f = new File("cars.txt");
+			File f = new File("car-list.txt");
 			Scanner s = new Scanner(f);
 
 			try {
 				String make = null;
 				String model = null;
 				String year = null;
+				String vin = null;
 				Scanner ui = new Scanner(System.in);
 
 				ArrayList<Car> cars = new ArrayList<>(80);
@@ -58,16 +66,21 @@ public class DisplayCars {
 					make = splitString[0];
 					model = splitString[1];
 					year = splitString[2];
-					cars.add(new Car(make, model, year));
+					vin = splitString[3];
+					cars.add(new Car(make, model, year, vin));
 				}
 
 				System.out.println("What car make are you looking for?");
-				ArrayList<Car> searchedMake = new ArrayList<>();
-				searchedMake = CarSearch.searchMake(cars, ui.nextLine());
+				ArrayList<Car> searchedMake;
+				String inputMake = ui.nextLine();
+				searchedMake = CarSearch.searchMakeUnsorted(cars, inputMake);
 
-				for (Car car : searchedMake) {
-					System.out.format("%15s%25s%5s%n", car.getMake(), car.getModel(), car.getYear());
-				}
+				System.out.println("Oldest " + inputMake);
+				System.out.println(CarSearch.searchOldestMake(searchedMake));
+
+				System.out.println("Newest " + inputMake);
+				System.out.println(CarSearch.searchNewestMake(searchedMake));
+
 			}
 			catch (Exception e) {
 				e.printStackTrace();
