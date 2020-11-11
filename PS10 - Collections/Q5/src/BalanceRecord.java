@@ -1,5 +1,8 @@
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 
@@ -8,15 +11,20 @@ public class BalanceRecord {
         TreeMap<String, Account> accounts = null;
 
         try {
-            Scanner accountDB = new Scanner(new File(filename));
+//            System.out.println("Received filename: " + filename);
+//            Scanner accountDB = new Scanner(new File(filename));
+//            System.out.println("Loaded!");
+
+            FileReader fr = new FileReader(filename);
+            BufferedReader accountDB = new BufferedReader(fr);
 
             try {
                 String accountNumber;
                 String balance;
                 accounts = new TreeMap<>();
 
-                for (int i = 0; accountDB.hasNextLine(); i++) {
-                    String line = accountDB.nextLine();
+                for (int i = 0; accountDB.readLine() != null; i++) {
+                    String line = accountDB.readLine();
                     if (line.equalsIgnoreCase("customer id\tbalance")) {
                         continue;
                     }
@@ -26,7 +34,7 @@ public class BalanceRecord {
                     balance = current[1];
                     accounts.put(accountNumber, new Account(accountNumber, balance));
                 }
-
+                System.out.println("Loaded!");
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -40,12 +48,14 @@ public class BalanceRecord {
     }
 
     public static void main(String[] args) {
-        loadFile("balances-0.txt");
-        loadFile("balances-1.txt");
-        loadFile("balances-2.txt");
-        loadFile("balances-3.txt");
-        loadFile("balances-4.txt");
-        loadFile("balances-5.txt");
+        String filename;
+        Scanner ui = new Scanner(System.in);
+
+        System.out.println("Enter a filename");
+//        filename = ui.next();
+//        System.out.println("Your filename is: " + filename);
+        Map<String, Account> accounts = loadFile(ui.next().trim());
+        System.out.println(accounts);
 
 
     }

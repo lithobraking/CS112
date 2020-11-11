@@ -9,4 +9,13 @@ public class Account {
         this.balance = Double.parseDouble(balance);
     }
 
+    @Override
+    public String toString() {
+        return "Account{" +
+                "accountNumber='" + accountNumber + '\'' +
+                ", balance=" + balance +
+                ", highestBalance=" + highestBalance +
+                ", lowestBalance=" + lowestBalance +
+                '}';
+    }
 }
